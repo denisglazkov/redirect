@@ -93,5 +93,6 @@ if __name__ == '__main__':
         For production, it is recommended to use Gunicorn.
     """
     port = 8080
+
     print(f"Running on port {port}")
     app.run(host='0.0.0.0', port=port, debug=True)
