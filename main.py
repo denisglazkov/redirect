@@ -26,12 +26,27 @@ def hello():
 
 @app.route('/telegram', methods=['GET'])
 def track_click():
-    ic("tsart")
+    """
+    Handles the /telegram route to track a click event and redirect to a Telegram channel URL.
+
+    This function performs the following steps:
+    1. Logs the start of the function using the icecream library.
+    2. Extracts UTM and other parameters the request.
+    3. Logs the event details.
+    4. Sends the event data to the Amplitude API.
+    5. Handles the response from the Amplitude API.
+    6. Redirects the user to the Telegram channel URL.
+
+    Returns:
+        A redirect response to the Telegram channel URL or a JSON error response.
+    """
     params = request.args
     utm_params = {
-        'utm_source': params.get('utm_source', '0000'),
-        'utm_medium': params.get('utm_medium', '0000'),
-        'utm_campaign': params.get('utm_campaign', '0000')
+        'utm_source': params.get('utm_source', None),
+        'utm_medium': params.get('utm_medium', None),
+        'utm_campaign': params.get('utm_campaign', None),
+        'cohort': params.get('cohort', None),
+        'send_date': params.get('send_date', None)
     }
     event = params.get('event', 'telegram')
     source = params.get('source', 'http_api_source')
@@ -64,3 +79,19 @@ def track_click():
         return jsonify({"error": "Failed to track event"}), 500
 
     return redirect(TELEGRAM_CHANNEL_URL, code=302)
+
+#for local test
+if __name__ == '__main__':
+    """
+    Entry point for running the Flask application locally.
+
+    This block of code performs the following steps:
+    1. Logs a warning indicating that the server is for development only.
+    2. Runs the Flask application on the specified host and port.
+
+    Note:
+        For production, it is recommended to use Gunicorn.
+    """
+    port = 8080
+    print(f"Running on port {port}")
+    app.run(host='0.0.0.0', port=port, debug=True)
