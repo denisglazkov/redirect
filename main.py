@@ -42,10 +42,11 @@ def track_click():
     """
     params = request.args
     utm_params = {
-        'utm_source': params.get('utm_source', None),
-        'utm_medium': params.get('utm_medium', None),
-        'utm_campaign': params.get('utm_campaign', None),
+        'utm_source': params.get('utm_source', "7777"),
+        'utm_medium': params.get('utm_medium', "7777"),
+        'utm_campaign': params.get('utm_campaign', "7777"),
         'cohort': params.get('cohort', None),
+        'personalisation': params.get('personalisation', None),
         'send_date': params.get('send_date', None)
     }
     event = params.get('event', 'telegram')
