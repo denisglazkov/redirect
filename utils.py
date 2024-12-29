@@ -1,9 +1,10 @@
 import json
-
 import requests
 from flask import jsonify, request
 from logging_config import logger
 from config import AMPLITUDE_API_KEY
+from user_agents import parse
+
 
 def track_click(params, event_name):
     """
@@ -30,8 +31,12 @@ def track_click(params, event_name):
     }
     event = event_name
     source = params.get('source', 'http_api_source')
+    user_agent = request.headers.get('User-Agent')
     ip_address = request.remote_addr
-    logger.info(f"Event: {event}, Source: {source}, UTM Params: {utm_params}, IP Address: {ip_address}")
+    parsed_user_agent = parse(user_agent)
+    os_info = f"{parsed_user_agent.os.family} {parsed_user_agent.os.version_string}"
+    logger.info(f"OS: {os_info}")
+    logger.info(f"Event: {event}, Source: {source}, UTM Params: {utm_params}, IP Address: {ip_address}, User Agent: {user_agent}")
     try:
         headers = {
             'Content-Type': 'application/json',
