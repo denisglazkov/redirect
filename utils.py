@@ -1,7 +1,7 @@
 import json
 
 import requests
-from flask import jsonify
+from flask import jsonify, request
 from logging_config import logger
 from config import AMPLITUDE_API_KEY
 
@@ -30,7 +30,8 @@ def track_click(params, event_name):
     }
     event = event_name
     source = params.get('source', 'http_api_source')
-    logger.info(f"Event: {event}, Source: {source}, UTM Params: {utm_params}")
+    ip_address = request.remote_addr
+    logger.info(f"Event: {event}, Source: {source}, UTM Params: {utm_params}, IP Address: {ip_address}")
     try:
         headers = {
             'Content-Type': 'application/json',
