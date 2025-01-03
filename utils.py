@@ -27,7 +27,10 @@ def track_click(params, event_name):
         'utm_campaign': params.get('utm_campaign', "7777"),
         'cohort': params.get('cohort', None),
         'personalisation': params.get('personalisation', None),
-        'send_date': params.get('send_date', None)
+        'send_date': params.get('send_date', None),
+        'utm_content': params.get('utm_content', "7777"),
+        'utm_ads': params.get('utm_ads', "7777"),
+        'utm_content_name': params.get('utm_content_name', "7777")
     }
     event = event_name
     source = params.get('source', 'http_api_source')
