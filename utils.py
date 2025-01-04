@@ -64,7 +64,7 @@ def track_purchase(params, event_name):
         'plan_id': params.get('plan_id', None),
         'site_name': params.get('site_name', None),
         'plan_title': params.get('plan_title', None),
-        'plan_price.value': params.get('plan_price', None),
+        'plan_price': params.get('plan_price', None),
         'plan_start_date': params.get('plan_start_date', None),
         'contact_id': params.get('contact_id', None),
         'plan_cycle_duration': params.get('plan_cycle_duration', None),
