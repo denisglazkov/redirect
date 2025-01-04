@@ -57,18 +57,18 @@ def track_click(params, event_name):
 
 def track_purchase(params, event_name):
     data = {
-        'plan_valid_until': params.get('plan_valid_until', '-'),
-        'site_email': params.get('site_email', '-'),
-        'plan_order_id': params.get('plan_order_id', '-'),
-        'plan_description': params.get('plan_description', '-'),
-        'plan_id': params.get('plan_id', '-'),
-        'site_name': params.get('site_name', '-'),
-        'plan_title': params.get('plan_title', '-'),
-        'plan_price.value': params.get('plan_price', {}),
-        'plan_start_date': params.get('plan_start_date', '-'),
-        'contact_id': params.get('contact_id', '-'),
-        'plan_cycle_duration': params.get('plan_cycle_duration', '-'),
-        'contact': params.get('contact', {})
+        'plan_valid_until': params.get('plan_valid_until', None),
+        'site_email': params.get('site_email', None),
+        'plan_order_id': params.get('plan_order_id', None),
+        'plan_description': params.get('plan_description', None),
+        'plan_id': params.get('plan_id', None),
+        'site_name': params.get('site_name', None),
+        'plan_title': params.get('plan_title', None),
+        'plan_price.value': params.get('plan_price', None),
+        'plan_start_date': params.get('plan_start_date', None),
+        'contact_id': params.get('contact_id', None),
+        'plan_cycle_duration': params.get('plan_cycle_duration', None),
+        'contact': params.get('contact', None)
     }
     event = event_name
     source = params.get('source', 'http_api_source')
