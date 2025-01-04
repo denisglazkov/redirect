@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, redirect, render_template_string
 from dotenv import load_dotenv
 from logging_config import logger
-from utils import track_click
+from utils import track_click, track_purchase
 from config import AMPLITUDE_API_KEY, TELEGRAM_CHANNEL_URL, YOUTUBE_CHANNEL_URL
 
 app = Flask(__name__)
@@ -37,6 +37,12 @@ def track_click_youtube():
     params = request.args
     track_click(params=params, event_name="youtube")
     return redirect(YOUTUBE_CHANNEL_URL, code=302)
+
+@app.route('/purchase', methods=['POST'])
+def track_purchase_wix():
+    params = request.json
+    track_purchase(params=params, event_name="purchase")
+    return {"message": "Purchase tracked successfully!"}, 200
 
 if __name__ == '__main__':
     app.run()
