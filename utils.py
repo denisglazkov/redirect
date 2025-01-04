@@ -56,7 +56,7 @@ def track_click(params, event_name):
     return None
 
 def track_purchase(params, event_name):
-    data = {
+    payload = {
         'plan_valid_until': params.get('plan_valid_until', None),
         'site_email': params.get('site_email', None),
         'plan_order_id': params.get('plan_order_id', None),
@@ -77,7 +77,7 @@ def track_purchase(params, event_name):
     parsed_user_agent = parse(user_agent)
     os_info = f"{parsed_user_agent.os.family} {parsed_user_agent.os.version_string}"
     logger.info(f"OS: {os_info}")
-    logger.info(f"Event: {event}, Source: {source}, Data: {data}, IP Address: {ip_address}, User Agent: {user_agent}")
+    logger.info(f"Event: {event}, Source: {source}, Data: {payload}, IP Address: {ip_address}, User Agent: {user_agent}")
     try:
         headers = {
             'Content-Type': 'application/json',
@@ -86,12 +86,12 @@ def track_purchase(params, event_name):
         data = {
             "api_key": AMPLITUDE_API_KEY,
             "events": [{
-                "user_id": data.contact.email | None,
+                "user_id": params.get('contact').get('email', None),
                 "device_id": "<INSERT DEVICE ID>",
                 "event_type": event,
                 "event_properties": {
                     "source": source,
-                    **data,
+                    **payload,
                 }
             }]
         }
