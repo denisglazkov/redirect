@@ -86,6 +86,7 @@ def track_purchase(params, event_name):
         data = {
             "api_key": AMPLITUDE_API_KEY,
             "events": [{
+                "user_id": data.contact.email | None,
                 "device_id": "<INSERT DEVICE ID>",
                 "event_type": event,
                 "event_properties": {
