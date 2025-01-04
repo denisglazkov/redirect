@@ -41,6 +41,7 @@ def track_click_youtube():
 @app.route('/purchase', methods=['POST'])
 def track_purchase_wix():
     params = request.json
+    logger.info(f"PAYLOAD: {params}")
     track_purchase(params=params, event_name="purchase")
     return {"message": "Purchase tracked successfully!"}, 200
 
