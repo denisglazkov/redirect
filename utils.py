@@ -34,7 +34,6 @@ def track_click(params, event_name):
         data = {
             "api_key": AMPLITUDE_API_KEY,
             "events": [{
-                "device_id": "<INSERT DEVICE ID>",
                 "event_type": event,
                 "event_properties": {
                     "source": source,
@@ -87,7 +86,6 @@ def track_purchase(params, event_name):
             "api_key": AMPLITUDE_API_KEY,
             "events": [{
                 "user_id": params.get('contact').get('email', None),
-                "device_id": "<INSERT DEVICE ID>",
                 "event_type": event,
                 "event_properties": {
                     "source": source,
