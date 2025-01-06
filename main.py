@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, redirect, render_template_string
 from dotenv import load_dotenv
 from logging_config import logger
-from utils import track_click, track_purchase
+from utils import track_click, track_purchase, track_login
 from config import AMPLITUDE_API_KEY, TELEGRAM_CHANNEL_URL, YOUTUBE_CHANNEL_URL
 
 app = Flask(__name__)
@@ -44,6 +44,13 @@ def track_purchase_wix():
     logger.info(f"PAYLOAD: {params}")
     track_purchase(params=params, event_name="purchase")
     return {"message": "Purchase tracked successfully!"}, 200
+
+@app.route('/login', methods=['POST'])
+def track_login_wix():
+    params = request.json.get("data")
+    logger.info(f"PAYLOAD: {params}")
+    track_login(params=params, event_name="login")
+    return {"message": "Login tracked successfully!"}, 200
 
 if __name__ == '__main__':
     app.run()

@@ -107,3 +107,47 @@ def track_purchase(params, event_name):
         return jsonify({"error": "Failed to track event"}), 500
 
     return None
+
+def track_login(params, event_name):
+    payload = {
+        'contactId': params.get('contactId', None),
+        'contact': params.get('contact', None)
+    }
+    event = event_name
+    source = params.get('source', 'http_api_source')
+    user_agent = request.headers.get('User-Agent')
+    cookies = request.headers.get('Cookie')
+    ip_address = request.remote_addr
+    parsed_user_agent = parse(user_agent)
+    os_info = f"{parsed_user_agent.os.family} {parsed_user_agent.os.version_string}"
+    logger.info(f"OS: {os_info}")
+    logger.info(f"Cookies: {cookies}")
+    logger.info(f"Event: {event}, Source: {source}, Data: {payload}, IP Address: {ip_address}, User Agent: {user_agent}")
+    try:
+        headers = {
+            'Content-Type': 'application/json',
+            'Accept': '*/*',
+        }
+        data = {
+            "api_key": AMPLITUDE_API_KEY,
+            "events": [{
+                "user_id": params.get('contact').get('email', None),
+                "event_type": event,
+                "event_properties": {
+                    "source": source,
+                    **payload,
+                }
+            }]
+        }
+        response = requests.post('https://api2.amplitude.com/2/httpapi',
+                                 headers=headers, data=json.dumps(data))
+        if response.status_code == 200:
+            logger.info(f"Success: {response.json()}")
+        else:
+            logger.error(f"Error: {response.text}")
+            return jsonify({"error": "Failed to track event"}), 500
+    except Exception as e:
+        logger.error(f"Error sending event to Amplitude: {e}")
+        return jsonify({"error": "Failed to track event"}), 500
+
+    return None
