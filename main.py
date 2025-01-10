@@ -1,29 +1,11 @@
 import os
-import json
 from flask import Flask, request, redirect, render_template_string
 from dotenv import load_dotenv
+from logging_config import logger
 from utils import track_click, track_purchase, track_login
 from config import AMPLITUDE_API_KEY, TELEGRAM_CHANNEL_URL, YOUTUBE_CHANNEL_URL
-import logging
-import newrelic.agent
 
-# Determine the environment (default to development)
-environment = os.getenv("FLASK_ENV", "development")
-
-# Initialize New Relic with the correct environment
-newrelic.agent.initialize('newrelic.ini',environment)
-
-# Flask app setup
 app = Flask(__name__)
-
-# Set up the logger
-logger = logging.getLogger("flask-app")
-logger.setLevel(logging.INFO)
-
-# Console handler for local debugging
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-logger.addHandler(console_handler)
 
 
 @app.route('/', methods=['GET'])

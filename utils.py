@@ -1,15 +1,11 @@
 import json
 import requests
-import logging
 from flask import jsonify, request
+from logging_config import logger
 from config import AMPLITUDE_API_KEY
 from user_agents import parse
 from tabulate import tabulate
 import textwrap
-
-
-# Get the existing logger instance
-logger = logging.getLogger("flask-app")
 
 def log_request_details(event, source, payload=None):
     """
@@ -24,7 +20,7 @@ def log_request_details(event, source, payload=None):
     referer = request.headers.get('Referer')
     origin = request.headers.get('Origin')
 
-    # Prepare the data for the table
+        # Prepare the data for the table
     table_data = [
         ["Field", "Value"],
         ["OS", wrap_text(os_info or "None")],
@@ -38,21 +34,13 @@ def log_request_details(event, source, payload=None):
         ["Origin", wrap_text(origin or "None")],
         ["FBCLID", wrap_text(fbclid or "None")],
     ]
-      # Generate table
+
+    # Generate table
     log_table = tabulate(table_data, headers="firstrow", tablefmt="fancy_grid")
-    # log_data = {
-    #     "OS": os_info,
-    #     "Cookies": cookies,
-    #     "Event": event,
-    #     "Source": source,
-    #     "Data": payload,
-    #     "IP Address": ip_address,
-    #     "User Agent": user_agent,
-    #     "Referer": referer,
-    #     "Origin": origin,
-    #     "FBCLID": fbclid,
-    # }
-    logger.info(f"\n{log_table}")
+    
+    # Print to console (optional)
+    print("\n" + log_table + "\n")
+
 
 def send_amplitude_event(user_id, event_name, event_properties):
     """
@@ -74,15 +62,16 @@ def send_amplitude_event(user_id, event_name, event_properties):
     try:
         response = requests.post('https://api2.amplitude.com/2/httpapi', headers=headers, data=json.dumps(data))
         if response.status_code == 200:
-            logger.info(f"Amplitude - success: {response.json()}")
+            logger.info(f"Success: {response.json()}")
         else:
-            logger.error(f"Amplitude - error: {response.text}")
+            logger.error(f"Error: {response.text}")
             return jsonify({"error": "Failed to track event"}), 500
     except Exception as e:
-        logger.error(f"Amplitude - error sending event to Amplitude: {e}")
+        logger.error(f"Error sending event to Amplitude: {e}")
         return jsonify({"error": "Failed to track event"}), 500
     
     return None
+
 
 def track_event(params, event_name, additional_properties=None):
     """
@@ -97,6 +86,7 @@ def track_event(params, event_name, additional_properties=None):
     
     log_request_details(event_name, source, event_properties)
     return send_amplitude_event(user_id, event_name, event_properties)
+
 
 def track_click(params, event_name):
     """
@@ -114,6 +104,7 @@ def track_click(params, event_name):
         'utm_content_name': params.get('utm_content_name', "7777"),
     }
     return track_event(params, event_name, utm_params)
+
 
 def track_purchase(params, event_name):
     """
@@ -135,6 +126,7 @@ def track_purchase(params, event_name):
     }
     return track_event(params, event_name, purchase_details)
 
+
 def track_login(params, event_name):
     """
     Tracks a login event.
@@ -144,6 +136,7 @@ def track_login(params, event_name):
         'contact': params.get('contact'),
     }
     return track_event(params, event_name, login_details)
+
 
 def wrap_text(data, width=50):
     """
