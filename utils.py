@@ -5,6 +5,7 @@ from logging_config import logger
 from config import AMPLITUDE_API_KEY
 from user_agents import parse
 from tabulate import tabulate
+import textwrap
 
 def log_request_details(event, source, payload=None):
     """
@@ -22,16 +23,16 @@ def log_request_details(event, source, payload=None):
         # Prepare the data for the table
     table_data = [
         ["Field", "Value"],
-        ["OS", os_info or "None"],
-        ["Cookies", cookies or "None"],
-        ["Event", event or "None"],
-        ["Source", source or "None"],
-        ["Data", payload or "None"],
-        ["IP Address", ip_address or "None"],
-        ["User Agent", user_agent or "None"],
-        ["Referer", referer or "None"],
-        ["Origin", origin or "None"],
-        ["FBCLID", fbclid or "None"],
+        ["OS", wrap_text(os_info or "None")],
+        ["Cookies", wrap_text(cookies or "None")],
+        ["Event", wrap_text(event or "None")],
+        ["Source", wrap_text(source or "None")],
+        ["Data", wrap_text(payload or "None")],
+        ["IP Address", wrap_text(ip_address or "None")],
+        ["User Agent", wrap_text(user_agent or "None")],
+        ["Referer", wrap_text(referer or "None")],
+        ["Origin", wrap_text(origin or "None")],
+        ["FBCLID", wrap_text(fbclid or "None")],
     ]
 
     # Generate table
@@ -39,6 +40,7 @@ def log_request_details(event, source, payload=None):
     
     # Print to console (optional)
     print("\n" + log_table + "\n")
+
 
 def send_amplitude_event(user_id, event_name, event_properties):
     """
@@ -134,3 +136,23 @@ def track_login(params, event_name):
         'contact': params.get('contact'),
     }
     return track_event(params, event_name, login_details)
+
+
+def wrap_text(data, width=50):
+    """
+    Formats text or dictionaries to be displayed in a table.
+    Each key-value pair in a dictionary appears on a new row,
+    with values wrapped to the specified width.
+    """
+    if isinstance(data, dict):
+        # Convert dictionary to key-value pairs with wrapped values
+        wrapped_lines = []
+        for key, value in data.items():
+            wrapped_value = "\n".join(textwrap.wrap(str(value), width=width))
+            wrapped_lines.append(f"{key}: {wrapped_value}")
+        return "\n".join(wrapped_lines)
+    elif data is None:
+        return "None"
+    else:
+        # Wrap plain text
+        return "\n".join(textwrap.wrap(str(data), width=width))
