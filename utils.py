@@ -34,7 +34,7 @@ def log_request_details(event, source, payload=None):
         ["Data", wrap_text(payload or "None")],
         ["IP Address", wrap_text(ip_address or "None")],
         ["User Agent", wrap_text(user_agent or "None")],
-        ["User Id", wrap_text(request.args.get('fbclid') or params.get('contact', {}).get('email', None))],
+        ["User Id", wrap_text(request.args.get('fbclid') or request.json.get("data").get('contact', {}).get('email', None))],
         ["Referer", wrap_text(referer or "None")],
         ["Origin", wrap_text(origin or "None")],
         ["FBCLID", wrap_text(fbclid or "None")],
