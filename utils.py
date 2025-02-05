@@ -66,7 +66,6 @@ def send_amplitude_event(user_id, event_name, event_properties):
         "api_key": AMPLITUDE_API_KEY,
         "events": [{
             "user_id": user_id,
-            "device_id": None if user_id else '<INSERT DEVICE ID>',
             "event_type": event_name,
             "event_properties": event_properties,
         }]
