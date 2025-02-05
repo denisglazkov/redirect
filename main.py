@@ -28,9 +28,7 @@ logger.addHandler(console_handler)
 
 @app.route('/', methods=['GET'])
 def hello():
-    user_ip = request.remote_addr or "Unknown IP"
-    
-    html_content = f"""
+    html_content = """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -41,7 +39,6 @@ def hello():
     <body>
         <h1>Hello, World!</h1>
         <p>Welcome to our tracking server.</p>
-        <p>Your IP address: <strong>{user_ip}</strong></p>
     </body>
     </html>
     """
