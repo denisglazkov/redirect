@@ -38,7 +38,7 @@ def log_request_details(event, source, payload=None):
         ["Origin", wrap_text(origin or "None")],
         ["FBCLID", wrap_text(fbclid or "None")],
     ]
-      # Generate table
+    # Generate table
     log_table = tabulate(table_data, headers="firstrow", tablefmt="fancy_grid")
     # log_data = {
     #     "OS": os_info,
@@ -66,6 +66,7 @@ def send_amplitude_event(user_id, event_name, event_properties):
         "api_key": AMPLITUDE_API_KEY,
         "events": [{
             "user_id": user_id,
+            "device_id": None if user_id else '<INSERT DEVICE ID>',
             "event_type": event_name,
             "event_properties": event_properties,
         }]
