@@ -17,7 +17,7 @@ def get_device_id():
     user_agent = request.headers.get("User-Agent", "unknown")
     ip_address = request.remote_addr or "0.0.0.0"
 
-    unique_string = f"{user_agent}-{ip_address}"
+    unique_string = f"{ip_address}-{user_agent}"
     
     # Generate SHA-256 hash and shorten it
     hash_object = hashlib.sha256(unique_string.encode()).digest()
@@ -76,6 +76,7 @@ def send_amplitude_event(user_id, event_name, event_properties):
         'Content-Type': 'application/json',
         'Accept': '*/*',
     }
+    ip_address = request.remote_addr or "0.0.0.0"
     data = {
         "api_key": AMPLITUDE_API_KEY,
         "events": [{
@@ -83,6 +84,7 @@ def send_amplitude_event(user_id, event_name, event_properties):
             "device_id": None if user_id else get_device_id(),
             "event_type": event_name,
             "event_properties": event_properties,
+            "ip": ip_address,
         }]
     }
     
