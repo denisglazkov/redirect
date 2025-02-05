@@ -30,7 +30,7 @@ logger.addHandler(console_handler)
 def hello():
     user_ip = request.remote_addr or "Unknown IP"
     
-    html_content = """
+    html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
