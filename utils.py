@@ -6,10 +6,24 @@ from config import AMPLITUDE_API_KEY
 from user_agents import parse
 from tabulate import tabulate
 import textwrap
-
+import hashlib
+import base64
 
 # Get the existing logger instance
 logger = logging.getLogger("flask-app")
+
+def get_device_id():
+    """Generates a short, unique device ID based on IP and User-Agent."""
+    user_agent = request.headers.get("User-Agent", "unknown")
+    ip_address = request.remote_addr or "0.0.0.0"
+
+    unique_string = f"{user_agent}-{ip_address}"
+    
+    # Generate SHA-256 hash and shorten it
+    hash_object = hashlib.sha256(unique_string.encode()).digest()
+    device_id = base64.urlsafe_b64encode(hash_object).decode()[:12]  # First 12 chars
+
+    return device_id
 
 def log_request_details(event, source, payload=None):
     """
@@ -66,6 +80,7 @@ def send_amplitude_event(user_id, event_name, event_properties):
         "api_key": AMPLITUDE_API_KEY,
         "events": [{
             "user_id": user_id,
+            "device_id": None if user_id else get_device_id(),
             "event_type": event_name,
             "event_properties": event_properties,
         }]
