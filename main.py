@@ -82,8 +82,9 @@ def collect_metrics():
     for channel, subs in youtube_data.items():
         send_to_amplitude({
             "event_type": "youtube_subscribers",
-            "user_id": "http_api_source",
+            "user_id": "system",
             "event_properties": {
+                "source": "http_api_source",
                 "channel": channel,
                 "subscribers": subs,
                 "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat() 
@@ -92,8 +93,9 @@ def collect_metrics():
 
     send_to_amplitude({
         "event_type": "telegram_subscribers",
-        "user_id": "http_api_source",
+        "user_id": "system",
         "event_properties": {
+            "source": "http_api_source",
             "subscribers": telegram_data,
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat() 
         }
