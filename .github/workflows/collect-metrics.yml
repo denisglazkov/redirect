@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call Metrics Endpoint
-        run: curl -X GET https://your-app.onrender.com/collect-metrics
+        run: curl -X GET https://tracking.yws-event.com//collect-metrics
