@@ -1,11 +1,15 @@
 import os
 import json
-from flask import Flask, request, redirect, render_template_string
+from flask import Flask, request, redirect, render_template_string, jsonify
 from dotenv import load_dotenv
 from utils import track_click, track_purchase, track_login
 from config import AMPLITUDE_API_KEY, TELEGRAM_CHANNEL_URL, YOUTUBE_CHANNEL_URL
 import logging
 import newrelic.agent
+from youtube import get_youtube_subscribers
+from telegram import get_telegram_subscribers
+from amplitude import send_to_amplitude
+import datetime
 
 # Determine the environment (default to development)
 environment = os.getenv("FLASK_ENV", "development")
@@ -69,6 +73,33 @@ def track_login_wix():
     logger.info(f"PAYLOAD: {params}")
     track_login(params=params, event_name="login")
     return {"message": "Login tracked successfully!"}, 200
+
+@app.route("/collect-metrics", methods=["GET"])
+def collect_metrics():
+    youtube_data = get_youtube_subscribers()
+    telegram_data = get_telegram_subscribers()
+
+    for channel, subs in youtube_data.items():
+        send_to_amplitude({
+            "event_type": "youtube_subscribers",
+            "user_id": "http_api_source",
+            "event_properties": {
+                "channel": channel,
+                "subscribers": subs,
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat() 
+            }
+        })
+
+    send_to_amplitude({
+        "event_type": "telegram_subscribers",
+        "user_id": "http_api_source",
+        "event_properties": {
+            "subscribers": telegram_data,
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat() 
+        }
+    })
+
+    return jsonify({"status": "success", "data": {"youtube": youtube_data, "telegram": telegram_data}})
 
 if __name__ == '__main__':
     app.run()

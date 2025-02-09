@@ -1,0 +1,12 @@
+name: Collect Metrics Daily
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at midnight UTC
+
+jobs:
+  collect-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Metrics Endpoint
+        run: curl -X GET https://your-app.onrender.com/collect-metrics
