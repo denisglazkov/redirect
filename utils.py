@@ -6,17 +6,38 @@ from config import AMPLITUDE_API_KEY
 from user_agents import parse
 from tabulate import tabulate
 import textwrap
-
+import hashlib
+import base64
 
 # Get the existing logger instance
 logger = logging.getLogger("flask-app")
+
+def get_client_ip():
+    """Retrieve the real client IP, considering proxy headers."""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0]  # Get the first (real) IP
+    return request.remote_addr  # Fallback if no proxy is used
+
+def get_device_id():
+    """Generates a short, unique device ID based on IP and User-Agent."""
+    user_agent = request.headers.get("User-Agent", "unknown")
+    ip_address = get_client_ip() or "0.0.0.0"
+
+    unique_string = f"{ip_address}-{user_agent}"
+    
+    # Generate SHA-256 hash and shorten it
+    hash_object = hashlib.sha256(unique_string.encode()).digest()
+    device_id = base64.urlsafe_b64encode(hash_object).decode()[:12]  # First 12 chars
+
+    return device_id
 
 def log_request_details(event, source, payload=None):
     """
     Logs common request details for tracking events.
     """
     user_agent = request.headers.get('User-Agent')
-    ip_address = request.remote_addr
+    ip_address = get_client_ip()
     cookies = request.headers.get('Cookie')
     parsed_user_agent = parse(user_agent)
     os_info = f"{parsed_user_agent.os.family} {parsed_user_agent.os.version_string}"
@@ -62,13 +83,15 @@ def send_amplitude_event(user_id, event_name, event_properties):
         'Content-Type': 'application/json',
         'Accept': '*/*',
     }
+    ip_address = get_client_ip() or "0.0.0.0"
     data = {
         "api_key": AMPLITUDE_API_KEY,
         "events": [{
             "user_id": user_id,
-            "device_id": None if user_id else '<INSERT DEVICE ID>',
+            "device_id": None if user_id else get_device_id(),
             "event_type": event_name,
             "event_properties": event_properties,
+            "ip": ip_address,
         }]
     }
     
