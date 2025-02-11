@@ -24,7 +24,7 @@ def insert_notion_row(source, count, when=None):
         "properties": {
             "Name": {
                 "title": [
-                    {"text": {"content": f"Data for {source} at {when.isoformat()}"}}
+                    {"text": {"content": f"Data for {source}"}}
                 ]
             },
             "Source": {

@@ -106,10 +106,11 @@ def collect_metrics():
             "time": int(now_utc.timestamp() * 1000)
         })
 
-
+    deltas = collect_deltas().get_json()
     return jsonify({
         "status": "success",
         "message": "Collected metrics and stored them in Notion.",
+        "deltas": deltas,
         "data": {
             "youtube": youtube_data,
             "telegram": telegram_data
