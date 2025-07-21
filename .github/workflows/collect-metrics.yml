@@ -1,5 +1,6 @@
 name: Collect Metrics Daily
 
+
 on:
   schedule:
     - cron: '0 * * * *' # Runs every hour
