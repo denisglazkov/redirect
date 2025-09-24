@@ -9,6 +9,7 @@ import textwrap
 import hashlib
 import base64
 
+
 # Get the existing logger instance
 logger = logging.getLogger("flask-app")
 
